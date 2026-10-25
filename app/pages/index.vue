@@ -32,7 +32,16 @@
               <span class="projectName">{{ p.name }}</span>
               <span class="projectKind">{{ p.kind }}</span>
             </a>
-            <p class="projectText">{{ p.text }}</p>
+            <p class="projectText">
+              {{ p.text }}
+              <a
+                v-if="p.repo"
+                class="repoLink"
+                :href="p.repo"
+                target="_blank"
+                rel="noopener noreferrer"
+              >Source</a>
+            </p>
           </li>
         </ul>
       </div>
@@ -59,7 +68,14 @@ useSeoMeta({
 })
 
 const projects = [
-  { name: 'Weasel Run', kind: 'Browser game', href: '/weasel-run', internal: true,
+  { name: 'Wheek Havoc', kind: 'Browser game, Three.js', href: 'https://wheek-havoc.shafe.dev',
+    repo: 'https://github.com/real-shafe/wheek-havoc',
+    text: 'A campy first-person roguelite. A guinea pig punches its way out of a lab full of robot scientists, powered up by science vials.' },
+  { name: 'Shatterfield', kind: 'Browser game, Three.js', href: 'https://shatterfield.shafe.dev',
+    repo: 'https://github.com/real-shafe/shatterfield',
+    text: 'A 3D arcade shooter. Fly an interceptor through a glowing asteroid field and shatter the rocks before they hit you.' },
+  { name: 'Weasel Run', kind: 'Browser game', href: 'https://weasel-run.shafe.dev',
+    repo: 'https://github.com/real-shafe/weasel-run',
     text: 'An endless one-button platformer. A weasel in a red bandana runs through four biomes, bops beetles and grabs coins.' },
   { name: 'tiny_llm', kind: 'Python, PyTorch', href: 'https://github.com/real-shafe/tiny_llm',
     text: 'A small GPT trained from scratch on the TinyStories dataset, built up step by step from a bigram baseline.' },
@@ -282,6 +298,16 @@ onBeforeUnmount(() => { disposed = true; field?.stop() })
   font-size: 18px;
   line-height: 1.5;
   color: var(--text);
+}
+
+.repoLink {
+  margin-left: 4px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.repoLink:hover {
+  color: var(--red);
 }
 
 .foot {

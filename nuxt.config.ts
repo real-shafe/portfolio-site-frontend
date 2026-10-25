@@ -9,6 +9,11 @@ export default defineNuxtConfig({
       nodeCompat: true,
     },
   },
+  routeRules: {
+    // the game moved to its own Worker; keep old links working
+    '/weasel-run': { redirect: { to: 'https://weasel-run.shafe.dev', statusCode: 301 } },
+    '/weasel-run/**': { redirect: { to: 'https://weasel-run.shafe.dev', statusCode: 301 } },
+  },
   app: {
     head: {
       link: [
