@@ -90,8 +90,9 @@ const projects = [
     text: 'Marks up parts of a flashcard as code.' },
   { name: 'Obscurdle', kind: 'React Native', href: 'https://github.com/real-shafe/obscurdle',
     text: 'A vocabulary flashcard game. Tap to reveal a word’s definition, tap again for the next word.' },
-  { name: 'Newton force law sim', kind: 'Python', href: 'https://github.com/real-shafe/newton-force-law-sim',
-    text: 'A spring-mass physics simulation with swappable forces, integrators and collision rules.' },
+  { name: 'Newton force law sim', kind: 'Browser sim, Python', href: 'https://newton-sim.shafe.dev',
+    repo: 'https://github.com/real-shafe/newton-force-law-sim',
+    text: 'A spring-mass physics sandbox with swappable forces, integrators and collision rules. Fling cloth, planets and Newton’s cradle, and watch the energy books balance.' },
 ]
 
 const canvas = ref<HTMLCanvasElement | null>(null)
