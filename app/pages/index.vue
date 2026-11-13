@@ -4,18 +4,6 @@
       <img class="portraitFallback" src="/images/shafe-avatar.jpg" alt="Shafe’s black-and-white portrait" width="400" height="400" fetchpriority="high">
       <canvas ref="canvas" class="field" aria-hidden="true"></canvas>
       <h1 class="srOnly">Shafe</h1>
-      <div class="intro">
-        <p class="lede">
-          I'm Shafe. I build study tools, train tiny language models and make
-          small games.
-        </p>
-        <nav class="links" aria-label="Primary">
-          <a class="link" href="#projects">Projects</a>
-          <NuxtLink class="link" to="/blog">Blog</NuxtLink>
-          <a class="link" href="https://github.com/real-shafe" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </nav>
-      </div>
-      <p class="hint" aria-hidden="true">Move to scatter · tap to ripple</p>
     </section>
 
     <section id="projects" class="card" aria-labelledby="projects-title">
@@ -46,16 +34,6 @@
         </ul>
       </div>
     </section>
-
-    <footer class="foot">
-      <p>
-        Latest writing:
-        <NuxtLink class="footLink" to="/blog/yet-another-anki-appreciation-post">Yet another Anki appreciation post</NuxtLink>
-      </p>
-      <p>
-        Code on <a class="footLink" href="https://github.com/real-shafe" target="_blank" rel="noopener noreferrer">GitHub</a>
-      </p>
-    </footer>
   </main>
 </template>
 
@@ -77,21 +55,13 @@ const projects = [
   { name: 'Weasel Run', kind: 'Browser game', href: 'https://weasel-run.shafe.dev',
     repo: 'https://github.com/real-shafe/weasel-run',
     text: 'An endless one-button platformer. A weasel in a red bandana runs through four biomes, bops beetles and grabs coins.' },
-  { name: 'tiny_llm', kind: 'PyTorch, runs in the browser', href: 'https://tiny-llm.shafe.dev',
+  { name: 'Short Story LLM', kind: 'PyTorch, runs in the browser', href: 'https://tiny-llm.shafe.dev',
     repo: 'https://github.com/real-shafe/tiny_llm',
     text: 'A small GPT trained from scratch on the TinyStories dataset, built up step by step from a bigram baseline. Start a story and it writes the rest, right on your device.' },
-  { name: 'wordle_llm', kind: 'Python, PyTorch', href: 'https://github.com/real-shafe/wordle_llm',
-    text: 'A small model trained on a laptop to play Wordle.' },
-  { name: 'anki_to_vec', kind: 'Python', href: 'https://github.com/real-shafe/anki_to_vec',
-    text: 'Turns Anki cards into vector embeddings and clusters them into topics.' },
   { name: 'Spanish conjugation decks', kind: 'Python, Anki', href: 'https://spanish-anki.shafe.dev',
     repo: 'https://github.com/real-shafe/spanish-conjugation-anki',
     text: 'A free Anki deck of 9,000+ Spanish verb conjugation cards, each with an example sentence. Browse every card and download the deck.' },
-  { name: 'Qode', kind: 'Anki add-on', href: 'https://github.com/real-shafe/Anki-Qode-Add-On',
-    text: 'Marks up parts of a flashcard as code.' },
-  { name: 'Obscurdle', kind: 'React Native', href: 'https://github.com/real-shafe/obscurdle',
-    text: 'A vocabulary flashcard game. Tap to reveal a word’s definition, tap again for the next word.' },
-  { name: 'Newton force law sim', kind: 'Browser sim, Python', href: 'https://newton-sim.shafe.dev',
+  { name: 'Newton Force Law Sim', kind: 'Browser sim, Python', href: 'https://newton-sim.shafe.dev',
     repo: 'https://github.com/real-shafe/newton-force-law-sim',
     text: 'A spring-mass physics sandbox with swappable forces, integrators and collision rules. Fling cloth, planets and Newton’s cradle, and watch the energy books balance.' },
 ]
@@ -168,65 +138,15 @@ onBeforeUnmount(() => { disposed = true; field?.stop() })
 }
 
 
-.intro {
-  position: absolute;
-  left: clamp(20px, 5vw, 64px);
-  right: clamp(20px, 5vw, 64px);
-  bottom: clamp(28px, 7vh, 72px);
-  max-width: 34rem;
-}
-
-.lede {
-  margin: 0 0 18px;
-  font-size: clamp(20px, 2.4vw, 28px);
-  line-height: 1.3;
-  font-weight: 500;
-  text-wrap: balance;
-}
-
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.link {
-  color: var(--paper);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 17px;
-  padding: 8px 16px;
-  border: 2px solid var(--paper);
-  border-radius: 999px;
-  transition: background-color 0.15s, color 0.15s;
-}
-
-.link:hover,
-.link:focus-visible {
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.link:focus-visible,
-.projectLink:focus-visible,
-.footLink:focus-visible {
+.projectLink:focus-visible {
   outline: 3px solid var(--red);
   outline-offset: 3px;
-}
-
-.hint {
-  position: absolute;
-  top: clamp(20px, 4vh, 36px);
-  right: clamp(20px, 5vw, 64px);
-  margin: 0;
-  font-size: 14px;
-  color: var(--ink-muted);
 }
 
 /* the projects list is one big index card */
 .card {
   position: relative;
-  margin: 0 clamp(12px, 3vw, 40px);
+  margin: 0 clamp(12px, 3vw, 40px) clamp(24px, 5vw, 64px);
   background: var(--paper);
   color: var(--text);
   border-radius: 6px;
@@ -313,29 +233,7 @@ onBeforeUnmount(() => { disposed = true; field?.stop() })
   color: var(--red);
 }
 
-.foot {
-  padding: 48px clamp(20px, 5vw, 64px) 64px;
-  font-size: 17px;
-  color: var(--ink-muted);
-}
-
-.foot p {
-  margin: 0 0 6px;
-}
-
-.footLink {
-  color: var(--paper);
-}
-
-@media (max-width: 640px) {
-  .hint {
-    left: 20px;
-    right: auto;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .link,
   .projectName {
     transition: none;
   }

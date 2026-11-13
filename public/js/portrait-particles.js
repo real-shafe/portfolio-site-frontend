@@ -2,6 +2,7 @@
 import * as THREE from '/vendor/three-r168.module.min.js';
 
 const TRAIL_LENGTH = 16;
+const BURST_COUNT = 8;
 
 export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
   const image = new Image();
@@ -34,10 +35,11 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
   geometry.setAttribute('aSeed', new THREE.Float32BufferAttribute(seeds, 1));
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const trail = Array.from({ length: TRAIL_LENGTH }, () => new THREE.Vector4(10, 10, -100, 0));
+  const bursts = Array.from({ length: BURST_COUNT }, () => new THREE.Vector3(0, 0, -100));
   const uniforms = {
     uTime: { value: 0 }, uIntro: { value: motion.matches ? 1 : 0 },
     uMotion: { value: motion.matches ? 0 : 1 }, uSize: { value: 2 },
-    uTrail: { value: trail }, uBurst: { value: new THREE.Vector3(0, 0, -100) },
+    uTrail: { value: trail }, uBurst: { value: bursts },
     uColor: { value: new THREE.Color('#fcfcf8') },
   };
   const material = new THREE.ShaderMaterial({
@@ -47,7 +49,7 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
       attribute float aSeed;
       uniform float uTime, uIntro, uMotion, uSize;
       uniform vec4 uTrail[${TRAIL_LENGTH}];
-      uniform vec3 uBurst;
+      uniform vec3 uBurst[${BURST_COUNT}];
       varying float vShade;
       void main() {
         vec3 p = position;
@@ -61,11 +63,13 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
           vec2 direction = delta / max(d, 0.002);
           displacement += (direction + vec2(-direction.y, direction.x) * 0.35) * influence * 0.032;
         }
-        vec2 burstDelta = position.xy - uBurst.xy;
-        float burstDistance = length(burstDelta);
-        float burstAge = max(0.0, uTime - uBurst.z);
-        float ring = exp(-pow((burstDistance - burstAge * 0.7) * 22.0, 2.0)) * exp(-burstAge * 1.6);
-        displacement += burstDelta / max(burstDistance, 0.002) * ring * 0.12;
+        for (int i = 0; i < ${BURST_COUNT}; i++) {
+          vec2 burstDelta = position.xy - uBurst[i].xy;
+          float burstDistance = length(burstDelta);
+          float burstAge = max(0.0, uTime - uBurst[i].z);
+          float ring = exp(-pow((burstDistance - burstAge * 0.7) * 22.0, 2.0)) * exp(-burstAge * 1.6);
+          displacement += burstDelta / max(burstDistance, 0.002) * ring * 0.12;
+        }
         float angle = aSeed * 62.83185;
         vec2 scattered = vec2(cos(angle), sin(angle)) * (0.3 + aSeed * 0.6);
         float formation = 1.0 - smoothstep(0.0, 1.0, uIntro);
@@ -95,7 +99,7 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
   const camera = new THREE.OrthographicCamera(-0.6, 0.6, 0.6, -0.6, 0.1, 10);
   camera.position.z = 2;
   let running = true, visible = true, frameId = 0, time = 0, lastFrame = 0;
-  let diameter = 1, centerX = 0, centerY = 0, trailIndex = 0, lastPointerTime = -1;
+  let diameter = 1, centerX = 0, centerY = 0, trailIndex = 0, burstIndex = 0, lastPointerTime = -1;
 
   function render() { renderer.render(scene, camera); }
   function resize() {
@@ -104,9 +108,9 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
     renderer.setPixelRatio(ratio);
     renderer.setSize(width, height, false);
-    // Keep the portrait above the intro on both tall phones and short laptops.
+    // Keep the portrait above the intro, if there is one, on both tall phones and short laptops.
     const intro = eventTarget.querySelector('.intro');
-    const introTop = intro ? intro.getBoundingClientRect().top - canvas.getBoundingClientRect().top : height - 180;
+    const introTop = intro ? intro.getBoundingClientRect().top - canvas.getBoundingClientRect().top : height;
     const top = Math.min(86, height * 0.13);
     const available = Math.max(120, introTop - top - 24);
     diameter = Math.min(width * 0.78, available, 620);
@@ -135,7 +139,9 @@ export async function start(canvas, { imageUrl, eventTarget = canvas } = {}) {
   function onDown(e) {
     if (motion.matches || e.target.closest?.('a, button')) return;
     const [x, y] = location(e);
-    if (Math.hypot(x, y) < 0.65) uniforms.uBurst.value.set(x, y, time);
+    if (Math.hypot(x, y) >= 0.65) return;
+    bursts[burstIndex].set(x, y, time);
+    burstIndex = (burstIndex + 1) % BURST_COUNT;
   }
   function frame(now) {
     frameId = 0;
